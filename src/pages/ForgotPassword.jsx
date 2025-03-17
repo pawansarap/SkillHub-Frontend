@@ -1,36 +1,33 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../config/constants';
 
-const Login = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      setError('Please fill in all fields');
+    if (!email) {
+      setError('Please enter your email address');
       return;
     }
     
     try {
       setError('');
+      setMessage('');
       setIsLoading(true);
       
-      const result = await login(email, password);
+      // Call the password reset API
+      const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
       
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.message || 'Failed to log in');
-      }
+      setMessage(response.data.message || 'Password reset instructions have been sent to your email.');
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError(err.response?.data?.message || 'An error occurred. Please try again.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -40,7 +37,10 @@ const Login = () => {
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-gray-800 py-8 px-4 shadow-lg shadow-gray-900/50 sm:rounded-lg sm:px-10 border border-gray-700">
-        <h2 className="mt-2 text-center text-3xl font-extrabold text-white">Sign in to your account</h2>
+        <h2 className="mt-2 text-center text-3xl font-extrabold text-white">Reset your password</h2>
+        <p className="mt-2 text-center text-sm text-gray-400">
+          Enter your email address and we'll send you instructions to reset your password.
+        </p>
         
         {error && (
           <div className="mt-4 bg-red-900/30 border-l-4 border-red-500 p-4">
@@ -52,6 +52,21 @@ const Login = () => {
               </div>
               <div className="ml-3">
                 <p className="text-sm text-red-400">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {message && (
+          <div className="mt-4 bg-green-900/30 border-l-4 border-green-500 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-green-400">{message}</p>
               </div>
             </div>
           </div>
@@ -78,45 +93,6 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-              Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-600 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Enter your password"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-600 rounded bg-gray-700"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-primary-400 hover:text-primary-300">
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-
-          <div>
             <button
               type="submit"
               disabled={isLoading}
@@ -124,16 +100,16 @@ const Login = () => {
                 isLoading ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? 'Sending...' : 'Send reset instructions'}
             </button>
           </div>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-primary-400 hover:text-primary-300">
-              Create an account
+            Remember your password?{' '}
+            <Link to="/login" className="font-medium text-primary-400 hover:text-primary-300">
+              Sign in
             </Link>
           </p>
         </div>
@@ -142,4 +118,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default ForgotPassword; 
