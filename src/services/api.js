@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { API_URL } from '../config/constants';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -46,16 +45,106 @@ export const authAPI = {
 
 // Assessments API
 export const assessmentsAPI = {
-  getAll: () => api.get('/assessments'),
-  getById: (id) => api.get(`/assessments/${id}`),
-  start: (id) => api.post(`/assessments/${id}/start`),
-  submit: (id, answers) => api.post(`/assessments/${id}/submit`, { answers }),
+  getStats: async () => {
+    try {
+      const response = await api.get('/assessments/stats');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getRecent: async () => {
+    try {
+      const response = await api.get('/assessments/recent');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAll: async () => {
+    try {
+      const response = await api.get('/assessments');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getById: async (id) => {
+    try {
+      const response = await api.get(`/assessments/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  create: async (assessmentData) => {
+    try {
+      const response = await api.post('/assessments', assessmentData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  update: async (id, assessmentData) => {
+    try {
+      const response = await api.put(`/assessments/${id}`, assessmentData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  delete: async (id) => {
+    try {
+      const response = await api.delete(`/assessments/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  submit: async (id, answers) => {
+    try {
+      const response = await api.post(`/assessments/${id}/submit`, answers);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  getResults: async (id) => {
+    try {
+      const response = await api.get(`/assessments/${id}/results`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 // Micro-credentials API
 export const credentialsAPI = {
-  getAll: () => api.get('/credentials'),
-  getById: (id) => api.get(`/credentials/${id}`),
+  getRecent: async () => {
+    try {
+      const response = await api.get('/credentials/recent');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAll: async () => {
+    try {
+      const response = await api.get('/credentials');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getById: async (id) => {
+    try {
+      const response = await api.get(`/credentials/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 // Forums API
@@ -68,8 +157,58 @@ export const forumsAPI = {
 
 // User API
 export const userAPI = {
-  updateProfile: (data) => api.put('/users/profile', data),
-  changePassword: (data) => api.put('/users/password', data),
+  getProfile: async () => {
+    try {
+      const response = await api.get('/users/profile');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  updateProfile: async (profileData) => {
+    try {
+      const response = await api.put('/users/profile', profileData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  getAssessmentHistory: async () => {
+    try {
+      const response = await api.get('/users/assessment-history');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+};
+
+// Admin API
+export const adminAPI = {
+  getAllUsers: async () => {
+    try {
+      const response = await api.get('/admin/users');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  updateUserRole: async (userId, role) => {
+    try {
+      const response = await api.put(`/admin/users/${userId}/role`, { role });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+  getAssessmentStats: async () => {
+    try {
+      const response = await api.get('/admin/assessments/stats');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 export default api; 

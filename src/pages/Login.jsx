@@ -25,7 +25,18 @@ const Login = () => {
       const result = await login(email, password);
       
       if (result.success) {
-        navigate('/dashboard');
+        // Check user role and redirect accordingly
+        const userRole = result.user.role;
+        switch (userRole) {
+          case 'admin':
+            navigate('/admin/dashboard');
+            break;
+          case 'user':
+            navigate('/dashboard');
+            break;
+          default:
+            navigate('/');
+        }
       } else {
         setError(result.message || 'Failed to log in');
       }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { assessmentsAPI } from '../services/api';
-import { ASSESSMENT_STATUS, ASSESSMENT_TYPES } from '../config/constants';
+import { assessmentsAPI } from '../../services/api';
+import { ASSESSMENT_STATUS, ASSESSMENT_TYPES } from '../../config/constants';
 
 const Assessments = () => {
   const [assessments, setAssessments] = useState([]);

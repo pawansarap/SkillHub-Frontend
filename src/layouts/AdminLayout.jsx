@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const DashboardLayout = () => {
+const AdminLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { currentUser, logout } = useAuth();
@@ -11,8 +11,9 @@ const DashboardLayout = () => {
 
   // Default menu items that are always available
   const defaultMenuItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/profile', label: 'Profile', icon: 'profile' },
+    { path: '/admin/dashboard', label: 'Admin Dashboard', icon: 'dashboard' },
+    { path: '/admin/users', label: 'User Management', icon: 'users' },
+    { path: '/admin/assessments', label: 'Assessment Management', icon: 'assessment' },
   ];
 
   // Get available pages from your backend or context
@@ -26,9 +27,9 @@ const DashboardLayout = () => {
         // Simulated API response
         const availablePages = [
           ...defaultMenuItems,
-          { path: '/assessments', label: 'Assessments', icon: 'assessment' },
-          { path: '/my-journey', label: 'My Journey', icon: 'journey' },
-          // Add other pages as they are created
+          { path: '/admin/analytics', label: 'Analytics', icon: 'analytics' },
+          { path: '/admin/settings', label: 'Settings', icon: 'settings' },
+          // Add other admin pages as they are created
         ];
         setMenuItems(availablePages);
       } catch (error) {
@@ -59,7 +60,7 @@ const DashboardLayout = () => {
         {/* Sidebar */}
         <div className="w-64 bg-white dark:bg-gray-800 shadow-lg">
           <div className="flex items-center justify-center h-16 border-b dark:border-gray-700">
-            <h1 className="text-xl font-bold text-primary-600">SkillHub</h1>
+            <h1 className="text-xl font-bold text-primary-600">SkillHub Admin</h1>
           </div>
           <nav className="mt-6">
             {menuItems.map((item) => (
@@ -82,7 +83,7 @@ const DashboardLayout = () => {
           <header className="flex items-center justify-between h-16 px-6 bg-white dark:bg-gray-800 shadow">
             <div className="flex items-center">
               <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                {menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard'}
+                {menuItems.find(item => item.path === location.pathname)?.label || 'Admin Dashboard'}
               </h2>
             </div>
 
@@ -103,9 +104,9 @@ const DashboardLayout = () => {
                 )}
               </button>
 
-              {/* Credits */}
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                Credits: {currentUser?.credits || 0}
+              {/* Admin Badge */}
+              <div className="px-3 py-1 text-sm font-medium text-white bg-primary-600 rounded-full">
+                Admin
               </div>
 
               {/* Profile Dropdown */}
@@ -116,16 +117,16 @@ const DashboardLayout = () => {
                 >
                   <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {currentUser?.name?.charAt(0) || 'U'}
+                      {currentUser?.name?.charAt(0) || 'A'}
                     </span>
                   </div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">{currentUser?.name || 'User'}</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">{currentUser?.name || 'Admin'}</span>
                 </button>
 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10">
                     <Link
-                      to="/profile"
+                      to="/admin/profile"
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Profile
@@ -154,4 +155,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout; 
+export default AdminLayout; 
