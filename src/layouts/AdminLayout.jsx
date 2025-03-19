@@ -19,27 +19,6 @@ const AdminLayout = () => {
   // Get available pages from your backend or context
   const [menuItems, setMenuItems] = useState(defaultMenuItems);
 
-  useEffect(() => {
-    // TODO: Replace with actual API call to get available pages
-    // This is just a simulation
-    const fetchAvailablePages = async () => {
-      try {
-        // Simulated API response
-        const availablePages = [
-          ...defaultMenuItems,
-          { path: '/admin/analytics', label: 'Analytics', icon: 'analytics' },
-          { path: '/admin/settings', label: 'Settings', icon: 'settings' },
-          // Add other admin pages as they are created
-        ];
-        setMenuItems(availablePages);
-      } catch (error) {
-        console.error('Failed to fetch available pages:', error);
-      }
-    };
-
-    fetchAvailablePages();
-  }, []);
-
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
@@ -60,7 +39,9 @@ const AdminLayout = () => {
         {/* Sidebar */}
         <div className="w-64 bg-white dark:bg-gray-800 shadow-lg">
           <div className="flex items-center justify-center h-16 border-b dark:border-gray-700">
-            <h1 className="text-xl font-bold text-primary-600">SkillHub Admin</h1>
+           <h1> <Link to="/" className="text-2xl font-bold text-primary-600 dark:text-primary-400 cursor-pointer">
+            SkillHub Admin
+              </Link> </h1>
           </div>
           <nav className="mt-6">
             {menuItems.map((item) => (
@@ -125,12 +106,7 @@ const AdminLayout = () => {
 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10">
-                    <Link
-                      to="/admin/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      Profile
-                    </Link>
+                    
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"

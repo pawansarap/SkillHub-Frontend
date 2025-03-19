@@ -2,18 +2,18 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-800 ">
       {/* Hero section */}
-      <div className="relative bg-white overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-800 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+          <div className="relative z-10 pb-8 bg-white dark:bg-gray-800  sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
             <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
               <div className="sm:text-center lg:text-left">
                 <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block xl:inline">Assess your skills,</span>{' '}
+                  <span className="block xl:inline dark:text-white">Assess your skills,</span>{' '}
                   <span className="block text-primary-600 xl:inline">earn credentials</span>
                 </h1>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                <p className="mt-3 text-base text-gray-500 dark:text-white sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                   SkillHub helps you showcase your abilities through assessments, earn micro-credentials, 
                   and connect with opportunities that match your skill set.
                 </p>
@@ -49,14 +49,14 @@ const Home = () => {
       </div>
 
       {/* Feature section */}
-      <div className="py-12 bg-white">
+      <div className="py-12 bg-white dark:bg-gray-800 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <h2 className="text-base text-primary-600 font-semibold tracking-wide uppercase">Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
               Everything you need to showcase your skills
             </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 dark:text-white lg:mx-auto">
               SkillHub provides a comprehensive platform for skill assessment, credentialing, and professional growth.
             </p>
           </div>
@@ -70,8 +70,8 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="ml-16">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Skill Assessments</h3>
-                  <p className="mt-2 text-base text-gray-500">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Skill Assessments</h3>
+                  <p className="mt-2 text-base text-gray-500 dark:text-white">
                     Take interactive assessments to evaluate your skills and identify areas for improvement.
                   </p>
                 </div>
@@ -84,8 +84,8 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="ml-16">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Micro-Credentials</h3>
-                  <p className="mt-2 text-base text-gray-500">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Micro-Credentials</h3>
+                  <p className="mt-2 text-base text-gray-500 dark:text-white">
                     Earn verified micro-credentials that showcase your expertise to potential employers.
                   </p>
                 </div>
@@ -98,8 +98,8 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="ml-16">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Peer Learning</h3>
-                  <p className="mt-2 text-base text-gray-500">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Peer Learning</h3>
+                  <p className="mt-2 text-base text-gray-500 dark:text-white">
                     Connect with peers, join discussion forums, and collaborate on projects to enhance your skills.
                   </p>
                 </div>
@@ -112,8 +112,8 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="ml-16">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Personalized Learning</h3>
-                  <p className="mt-2 text-base text-gray-500">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Personalized Learning</h3>
+                  <p className="mt-2 text-base text-gray-500 dark:text-white">
                     Receive AI-powered recommendations for learning resources based on your assessment results.
                   </p>
                 </div>

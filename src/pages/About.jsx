@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const About = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-800">
       {/* Hero section */}
-      <div className="relative py-16 bg-white overflow-hidden">
+      <div className="relative py-16 bg-white dark:bg-gray-800 overflow-hidden">
         <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:h-full lg:w-full">
           <div className="relative h-full text-lg max-w-prose mx-auto" aria-hidden="true">
             <svg
@@ -58,16 +58,16 @@ const About = () => {
               <span className="block text-base text-center text-primary-600 font-semibold tracking-wide uppercase">
                 About Us
               </span>
-              <span className="mt-2 block text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              <span className="mt-2 block text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
                 Empowering Skills Development
               </span>
             </h1>
-            <p className="mt-8 text-xl text-gray-500 leading-8">
+            <p className="mt-8 text-xl text-gray-500 dark:text-white leading-8">
               SkillHub is a comprehensive platform designed to help individuals assess their skills, 
               earn recognized credentials, and connect with learning opportunities tailored to their needs.
             </p>
           </div>
-          <div className="mt-6 prose prose-indigo prose-lg text-gray-500 mx-auto">
+          <div className="mt-6 prose prose-indigo prose-lg text-gray-500 dark:text-white mx-auto max-w-[70%]">
             <h2>Our Mission</h2>
             <p>
               At SkillHub, we believe that everyone should have access to quality skill assessment and 

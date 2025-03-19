@@ -163,11 +163,11 @@ const Assessments = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Assessments</h1>
-            <p className="mt-1 text-gray-600">Take assessments to evaluate your skills and earn credentials.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assessments</h1>
+            <p className="mt-1 text-gray-600 dark:text-white">Take assessments to evaluate your skills and earn credentials.</p>
           </div>
           <div className="mt-4 md:mt-0">
             <select
@@ -200,29 +200,29 @@ const Assessments = () => {
       )}
 
       {filteredAssessments.length === 0 ? (
-        <div className="bg-white shadow rounded-lg p-6 text-center">
-          <p className="text-gray-500">No assessments found matching your filter.</p>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 text-center">
+          <p className="text-gray-500 dark:text-white">No assessments found matching your filter.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredAssessments.map((assessment) => (
-            <div key={assessment.id} className="bg-white shadow rounded-lg overflow-hidden">
+            <div key={assessment.id} className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center">
                   {getTypeIcon(assessment.type)}
-                  <span className="ml-2 text-xs font-medium text-gray-500 uppercase">{assessment.type}</span>
+                  <span className="ml-2 text-xs font-medium text-gray-500 dark:text-white uppercase">{assessment.type}</span>
                 </div>
-                <h3 className="mt-2 text-xl font-semibold text-gray-900">{assessment.title}</h3>
-                <p className="mt-2 text-gray-600 line-clamp-3">{assessment.description}</p>
+                <h3 className="mt-2 text-xl font-semibold text-gray-900 dark:text-white">{assessment.title}</h3>
+                <p className="mt-2 text-gray-600 line-clamp-3 dark:text-white">{assessment.description}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(assessment.status)}`}>
                     {getStatusText(assessment.status)}
                   </span>
                   {assessment.score !== null && (
-                    <span className="text-sm font-medium text-gray-900">Score: {assessment.score}%</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Score: {assessment.score}%</span>
                   )}
                 </div>
-                <div className="mt-4 text-sm text-gray-500">
+                <div className="mt-4 text-sm text-gray-500 dark:text-white">
                   <div className="flex items-center">
                     <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -239,7 +239,7 @@ const Assessments = () => {
                   )}
                 </div>
               </div>
-              <div className="bg-gray-50 px-6 py-4">
+              <div className=" bg-white dark:bg-gray-800 px-6 py-4">
                 <Link
                   to={`/assessments/${assessment.id}`}
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"

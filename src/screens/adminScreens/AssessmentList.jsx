@@ -76,7 +76,7 @@ const AssessmentList = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assessments</h1>
         <Link
-          to="/admin/assessments/create"
+          to="/admin/assessments/new"
           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800"
         >
           Create New Assessment

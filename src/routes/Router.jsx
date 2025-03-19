@@ -8,7 +8,7 @@ import AdminLayout from '../layouts/AdminLayout';
 
 // Import pages
 import Home from '../pages/Home';
-import About from '../screens/userScreens/About';
+import About from '../pages/About';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
