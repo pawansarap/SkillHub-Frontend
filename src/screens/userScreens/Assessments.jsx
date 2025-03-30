@@ -99,7 +99,7 @@ const Assessments = () => {
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case ASSESSMENT_STATUS.COMPLETED:
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 ';
       case ASSESSMENT_STATUS.IN_PROGRESS:
         return 'bg-yellow-100 text-yellow-800';
       case ASSESSMENT_STATUS.EVALUATED:
@@ -173,7 +173,7 @@ const Assessments = () => {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md "
             >
               <option value="all">All Assessments</option>
               <option value={ASSESSMENT_STATUS.NOT_STARTED}>Not Started</option>

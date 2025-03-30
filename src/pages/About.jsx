@@ -67,7 +67,7 @@ const About = () => {
               earn recognized credentials, and connect with learning opportunities tailored to their needs.
             </p>
           </div>
-          <div className="mt-6 prose prose-indigo prose-lg text-gray-500 dark:text-white mx-auto max-w-[70%]">
+          <div className="mt-6 prose prose-indigo prose-lg text-gray-500 dark:text-white mx-auto max-w-[65%]">
             <h2>Our Mission</h2>
             <p>
               At SkillHub, we believe that everyone should have access to quality skill assessment and 

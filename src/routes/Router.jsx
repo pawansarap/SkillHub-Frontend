@@ -13,9 +13,12 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
+import NotFound from '../pages/NotFound';
+
+// Import user screens
 import Dashboard from '../screens/userScreens/Dashboard';
 import Assessments from '../screens/userScreens/Assessments';
-import NotFound from '../pages/NotFound';
+import AssessmentTest from "../screens/userScreens/AssessmentTest";
 
 // Import admin screens
 import AdminDashboard from '../screens/adminScreens/AdminDashboard';
@@ -71,7 +74,8 @@ const Router = () => {
       element: <DashboardLayout />,
       children: [
         { path: "/dashboard", element: <Dashboard /> },
-        { path: "/assessments", element: <Assessments /> }
+        { path: "/assessments", element: <Assessments /> },
+        { path: "/assessments/:id", element: <AssessmentTest /> }
       ]
     },
 
