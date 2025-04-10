@@ -349,7 +349,27 @@ const AssessmentForm = () => {
                     </select>
                   </div>
 
+                  <div >
+                  <label htmlFor="language" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Sub Topic
+                </label>
+                <select
+                  id="language"
+                  // value={assessment.language}
+                  // onChange={(e) => setAssessment(prev => ({ ...prev, language: e.target.value }))}
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                  required
+                >
+                  <option value="">Select a Sub Type</option>
+                  <option value="javascript">Sub type 1</option>
+                  <option value="python">Sub type 2</option>
+                  <option value="java">Sub type 3</option>
+                  <option value="cpp">Sub type 4</option>
+                </select>
+                  </div>
+
                   <div>
+                  
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Question Text
                     </label>
