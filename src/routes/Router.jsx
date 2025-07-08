@@ -19,6 +19,7 @@ import NotFound from '../pages/NotFound';
 import Dashboard from '../screens/userScreens/Dashboard';
 import Assessments from '../screens/userScreens/Assessments';
 import AssessmentTest from "../screens/userScreens/AssessmentTest";
+import AssessmentResult from "../screens/userScreens/AssessmentResult"
 
 // Import admin screens
 import AdminDashboard from '../screens/adminScreens/AdminDashboard';
@@ -75,7 +76,8 @@ const Router = () => {
       children: [
         { path: "/dashboard", element: <Dashboard /> },
         { path: "/assessments", element: <Assessments /> },
-        { path: "/assessments/:id", element: <AssessmentTest /> }
+        { path: "/assessments/:id/take", element: <AssessmentTest /> },
+        { path: "/assessments/:id/results", element: <AssessmentResult /> }
       ]
     },
 

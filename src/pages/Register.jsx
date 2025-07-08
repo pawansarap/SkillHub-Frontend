@@ -8,7 +8,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [wantAdmin, setWantAdmin] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -17,27 +19,37 @@ const Register = () => {
     
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      setFormErrors({});
       return;
     }
     
     if (password !== confirmPassword) {
       setError('Passwords do not match');
+      setFormErrors({});
       return;
     }
     
     try {
       setError('');
+      setFormErrors({});
       setIsLoading(true);
       
-      const result = await register(name, email, password);
+      const result = await register(name, email, password, wantAdmin);
       
       if (result.success) {
-        navigate('/dashboard');
+        navigate('/login', { 
+          state: { 
+            message: 'Registration successful! Please login to continue.',
+            email: email
+          }
+        });
       } else {
         setError(result.message || 'Failed to register');
+        setFormErrors(result.errors || {});
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
+      setFormErrors({});
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -48,6 +60,24 @@ const Register = () => {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-gray-800 py-8 px-4 shadow-lg shadow-gray-900/50 sm:rounded-lg sm:px-10 border border-gray-700">
         <h2 className="mt-2 text-center text-3xl font-extrabold text-white">Create your account</h2>
+        
+        {Object.keys(formErrors).length > 0 && (
+          <div className="mt-4 bg-red-900/30 border-l-4 border-red-500 p-4">
+            {Object.entries(formErrors).map(([field, messages]) =>
+              Array.isArray(messages)
+                ? messages.map((msg, idx) => (
+                    <div key={field + idx} className="text-sm text-red-400">
+                      {field !== 'non_field_errors' ? `${field}: ` : ''}{msg}
+                    </div>
+                  ))
+                : (
+                    <div key={field} className="text-sm text-red-400">
+                      {field !== 'non_field_errors' ? `${field}: ` : ''}{messages}
+                    </div>
+                  )
+            )}
+          </div>
+        )}
         
         {error && (
           <div className="mt-4 bg-red-900/30 border-l-4 border-red-500 p-4">
@@ -139,6 +169,20 @@ const Register = () => {
                 placeholder="Confirm your password"
               />
             </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="wantAdmin"
+              name="wantAdmin"
+              type="checkbox"
+              checked={wantAdmin}
+              onChange={() => setWantAdmin(!wantAdmin)}
+              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-600 rounded bg-gray-700"
+            />
+            <label htmlFor="wantAdmin" className="ml-2 block text-sm text-gray-300">
+              Want to be an admin?
+            </label>
           </div>
 
           <div>

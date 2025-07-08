@@ -1,14 +1,27 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check for registration success message
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Pre-fill email if provided
+      if (location.state.email) {
+        setEmail(location.state.email);
+      }
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +33,7 @@ const Login = () => {
     
     try {
       setError('');
+      setSuccessMessage('');
       setIsLoading(true);
       
       const result = await login(email, password);
@@ -53,11 +67,26 @@ const Login = () => {
       <div className="bg-gray-800 py-8 px-4 shadow-lg shadow-gray-900/50 sm:rounded-lg sm:px-10 border border-gray-700">
         <h2 className="mt-2 text-center text-3xl font-extrabold text-white">Sign in to your account</h2>
         
+        {successMessage && (
+          <div className="mt-4 bg-green-900/30 border-l-4 border-green-500 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-green-400">{successMessage}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {error && (
           <div className="mt-4 bg-red-900/30 border-l-4 border-red-500 p-4">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>

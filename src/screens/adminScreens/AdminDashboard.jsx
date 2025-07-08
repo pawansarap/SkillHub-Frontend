@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/axios';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -8,6 +9,10 @@ const AdminDashboard = () => {
     activeUsers: 0,
     totalAssessments: 0,
     publishedAssessments: 0
+  });
+  const [recentActivity, setRecentActivity] = useState({
+    registrations: [],
+    assessments: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -17,17 +22,13 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         setIsLoading(true);
-        // TODO: Replace with actual API call
-        // Simulated data
-        setStats({
-          totalUsers: 150,
-          activeUsers: 120,
-          totalAssessments: 25,
-          publishedAssessments: 18
-        });
+        const response = await api.get('/users/dashboard_stats/');
+        setStats(response.data.stats);
+        setRecentActivity(response.data.recentActivity);
+        setError('');
       } catch (err) {
-        setError('Failed to load dashboard statistics');
-        console.error(err);
+        setError('Failed to load dashboard statistics: ' + (err.response?.data?.error || err.message));
+        console.error('Error fetching dashboard stats:', err);
       } finally {
         setIsLoading(false);
       }
@@ -197,19 +198,20 @@ const AdminDashboard = () => {
           <div className="p-6">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Recent Activity</h2>
             <div className="space-y-4">
-              {/* TODO: Replace with actual recent activity data */}
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                New user registration
-              </div>
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                Assessment "JavaScript Basics" published
-              </div>
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
-                User profile updated
-              </div>
+              {recentActivity.registrations.map((registration) => (
+                <div key={registration.id} className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  {registration.name} joined
+                  <span className="ml-auto">{new Date(registration.date).toLocaleDateString()}</span>
+                </div>
+              ))}
+              {recentActivity.assessments.map((assessment) => (
+                <div key={assessment.id} className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  Assessment "{assessment.title}" {assessment.isPublished ? 'published' : 'created'}
+                  <span className="ml-auto">{new Date(assessment.date).toLocaleDateString()}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
-import { API_URL } from '../config/constants';
+import api from '../utils/axios';
+import { STORAGE_KEYS } from '../config/constants';
 
 const AuthContext = createContext();
 
@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log('AuthContext useEffect running');
     // Check if user is already logged in
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -21,48 +22,61 @@ export const AuthProvider = ({ children }) => {
         
         if (decoded.exp < currentTime) {
           // Token expired
-          localStorage.removeItem('token');
+          console.log('Token expired, clearing user data');
+          localStorage.removeItem(STORAGE_KEYS.TOKEN);
+          localStorage.removeItem(STORAGE_KEYS.USER);
           setCurrentUser(null);
         } else {
-          // Set user from token
-          setCurrentUser({
-            id: decoded.id,
-            email: decoded.email,
-            name: decoded.name,
-            role: decoded.role,
-          });
-          
-          // Set axios default header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          // Get user data from local storage if available
+          const userData = localStorage.getItem(STORAGE_KEYS.USER);
+          if (userData) {
+            const parsedUserData = JSON.parse(userData);
+            console.log('Retrieved user data from localStorage:', parsedUserData);
+            setCurrentUser(parsedUserData);
+          }
         }
       } catch (error) {
         console.error('Invalid token:', error);
-        localStorage.removeItem('token');
+        localStorage.removeItem(STORAGE_KEYS.TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.USER);
       }
     }
     setIsLoading(false);
   }, []);
 
+  // Add effect to log currentUser changes
+  useEffect(() => {
+    console.log('currentUser state updated:', currentUser);
+  }, [currentUser]);
+
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      console.log('Attempting login for email:', email);
+      const response = await api.post('/auth/login/', {
         email,
         password,
       });
       
+      console.log('Login Response:', response.data);
+      
       const { token, user } = response.data;
       
-      // Save token to localStorage
-      localStorage.setItem('token', token);
+      console.log('User data from backend:', user);
       
-      // Set axios default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Save token and user data to localStorage
+      localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+      
+      console.log('Saved user data:', JSON.parse(localStorage.getItem(STORAGE_KEYS.USER)));
       
       // Set user in state
       setCurrentUser(user);
       
-      return { success: true };
+      console.log('Set currentUser in state:', user);
+      
+      return { success: true, user };
     } catch (error) {
+      console.error('Login error:', error.response?.data);
       return {
         success: false,
         message: error.response?.data?.message || 'Login failed',
@@ -70,40 +84,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, wantAdmin) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, {
-        name,
+      // Format username to be valid for Django (lowercase, no spaces)
+      const username = name.toLowerCase().replace(/\s+/g, '_');
+      
+      const response = await api.post('/auth/register/', {
+        username,
         email,
         password,
+        password2: password,
+        first_name: name.split(' ')[0] || '',
+        last_name: name.split(' ').slice(1).join(' ') || '',
+        is_admin: wantAdmin,
       });
-      
-      const { token, user } = response.data;
-      
-      // Save token to localStorage
-      localStorage.setItem('token', token);
-      
-      // Set axios default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Set user in state
-      setCurrentUser(user);
       
       return { success: true };
     } catch (error) {
+      // Return the full error response from backend
       return {
         success: false,
         message: error.response?.data?.message || 'Registration failed',
+        errors: error.response?.data || {},
       };
     }
   };
 
   const logout = () => {
-    // Remove token from localStorage
-    localStorage.removeItem('token');
-    
-    // Remove axios default header
-    delete axios.defaults.headers.common['Authorization'];
+    console.log('Logging out, clearing user data');
+    // Remove data from localStorage
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
     
     // Clear user from state
     setCurrentUser(null);
@@ -116,6 +127,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
   };
+
+  console.log('AuthContext providing value:', value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }; 

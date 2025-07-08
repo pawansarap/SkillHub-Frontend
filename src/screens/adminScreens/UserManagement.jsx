@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../utils/axios';
+import { STORAGE_KEYS } from '../../config/constants';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -9,45 +11,37 @@ const UserManagement = () => {
   const [filterRole, setFilterRole] = useState('all');
   const { currentUser } = useAuth();
 
+  // Add auth token to requests
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  // Add response interceptor to handle 401 errors
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        // Redirect to login if unauthorized
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
+    }
+  );
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setIsLoading(true);
-        // TODO: Replace with actual API call
-        // Simulated data
-        const mockUsers = [
-          {
-            id: 1,
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'user',
-            status: 'active',
-            joinedAt: '2024-01-15',
-            lastActive: '2024-03-17'
-          },
-          {
-            id: 2,
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            role: 'admin',
-            status: 'active',
-            joinedAt: '2024-02-01',
-            lastActive: '2024-03-17'
-          },
-          {
-            id: 3,
-            name: 'Bob Wilson',
-            email: 'bob@example.com',
-            role: 'user',
-            status: 'inactive',
-            joinedAt: '2024-02-15',
-            lastActive: '2024-03-10'
-          }
-        ];
-        setUsers(mockUsers);
+        const response = await api.get('/users/management/');
+        setUsers(response.data);
+        setError('');
       } catch (err) {
-        setError('Failed to load users');
-        console.error(err);
+        setError('Failed to load users: ' + (err.response?.data?.error || err.message));
+        console.error('Error fetching users:', err);
       } finally {
         setIsLoading(false);
       }
@@ -58,27 +52,25 @@ const UserManagement = () => {
 
   const handleStatusChange = async (userId, newStatus) => {
     try {
-      // TODO: Replace with actual API call
-      setUsers(prevUsers =>
-        prevUsers.map(user =>
-          user.id === userId ? { ...user, status: newStatus } : user
-        )
-      );
+      await api.patch(`/users/${userId}/`, { is_active: newStatus === 'active' });
+      // Refresh the user list after successful update
+      const response = await api.get('/users/management/');
+      setUsers(response.data);
     } catch (err) {
       console.error('Failed to update user status:', err);
+      setError('Failed to update user status: ' + (err.response?.data?.error || err.message));
     }
   };
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      // TODO: Replace with actual API call
-      setUsers(prevUsers =>
-        prevUsers.map(user =>
-          user.id === userId ? { ...user, role: newRole } : user
-        )
-      );
+      await api.patch(`/users/${userId}/`, { role: newRole });
+      // Refresh the user list after successful update
+      const response = await api.get('/users/management/');
+      setUsers(response.data);
     } catch (err) {
       console.error('Failed to update user role:', err);
+      setError('Failed to update user role: ' + (err.response?.data?.error || err.message));
     }
   };
 

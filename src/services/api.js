@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -47,73 +47,100 @@ export const authAPI = {
 export const assessmentsAPI = {
   getStats: async () => {
     try {
+      console.log('Fetching assessment stats...');
       const response = await api.get('/assessments/stats');
+      console.log('Assessment stats response:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Error fetching assessment stats:', error.response?.data || error);
       throw error;
     }
   },
   getRecent: async () => {
     try {
+      console.log('Fetching recent assessments...');
       const response = await api.get('/assessments/recent');
+      console.log('Recent assessments response:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Error fetching recent assessments:', error.response?.data || error);
       throw error;
     }
   },
   getAll: async () => {
     try {
-      const response = await api.get('/assessments');
-      return response.data;
+      console.log('Fetching all assessments...');
+      const res = await api.get('/assessments/');
+      console.log('All assessments response:', res.data);
+      return res.data;
     } catch (error) {
+      console.error('Error fetching all assessments:', error.response?.data || error);
       throw error;
     }
   },
   getById: async (id) => {
     try {
+      console.log(`Fetching assessment ${id}...`);
       const response = await api.get(`/assessments/${id}`);
+      console.log('Assessment details response:', response.data);
       return response.data;
     } catch (error) {
+      console.error(`Error fetching assessment ${id}:`, error.response?.data || error);
       throw error;
     }
   },
   create: async (assessmentData) => {
     try {
+      console.log('Creating assessment with data:', assessmentData);
       const response = await api.post('/assessments', assessmentData);
+      console.log('Create assessment response:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Error creating assessment:', error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },
   update: async (id, assessmentData) => {
     try {
+      console.log(`Updating assessment ${id} with data:`, assessmentData);
       const response = await api.put(`/assessments/${id}`, assessmentData);
+      console.log('Update assessment response:', response.data);
       return response.data;
     } catch (error) {
+      console.error(`Error updating assessment ${id}:`, error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },
   delete: async (id) => {
     try {
+      console.log(`Deleting assessment ${id}...`);
       const response = await api.delete(`/assessments/${id}`);
+      console.log('Delete assessment response:', response.data);
       return response.data;
     } catch (error) {
+      console.error(`Error deleting assessment ${id}:`, error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },
   submit: async (id, answers) => {
     try {
+      console.log(`Submitting answers for assessment ${id}:`, answers);
       const response = await api.post(`/assessments/${id}/submit`, answers);
+      console.log('Submit assessment response:', response.data);
       return response.data;
     } catch (error) {
+      console.error(`Error submitting assessment ${id}:`, error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },
   getResults: async (id) => {
     try {
+      console.log(`Fetching results for assessment ${id}...`);
       const response = await api.get(`/assessments/${id}/results`);
+      console.log('Assessment results response:', response.data);
       return response.data;
     } catch (error) {
+      console.error(`Error fetching assessment ${id} results:`, error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },
@@ -209,6 +236,58 @@ export const adminAPI = {
       throw error.response?.data || error.message;
     }
   },
+};
+
+export const userAssessmentsAPI = {
+  getAll: async () => {
+    try {
+      console.log('Fetching all user assessments...');
+      const res = await api.get('/user-assessments/');
+      console.log('User assessments response:', res.data);
+      return res.data;
+    } catch (error) {
+      console.error('Error fetching user assessments:', error.response?.data || error);
+      throw error;
+    }
+  },
+  start: async (data) => {
+    try {
+      console.log('Starting assessment with data:', data);
+      const res = await api.post('/user-assessments/start/', data);
+      console.log('Start assessment response:', res.data);
+      return res.data;
+    } catch (error) {
+      console.error('Error starting assessment:', error.response?.data || error);
+      throw error;
+    }
+  },
+  getResult: async (assessmentId) => {
+    try {
+      console.log(`Fetching result for user assessment ${assessmentId}...`);
+      const res = await api.get(`/user-assessments/by-assessment/${assessmentId}/`);
+      console.log('User assessment result response:', res.data);
+      return res.data;
+    } catch (error) {
+      console.error(`Error fetching user assessment ${assessmentId} result:`, error.response?.data || error);
+      throw error;
+    }
+  },
+  submit: async (userAssessmentId, answers) => {
+    try {
+      console.log(`Submitting answers for user assessment ${userAssessmentId}:`, answers);
+      const res = await api.post(`/user-assessments/submit/`, { user_assessment_id: userAssessmentId, answers });
+      console.log('Submit user assessment response:', res.data);
+      return res.data;
+    } catch (error) {
+      console.error(`Error submitting user assessment ${userAssessmentId}:`, error.response?.data || error);
+      throw error;
+    }
+  }
+};
+
+export const userAnswersAPI = {
+  getAll: () => api.get('/user-answers/'),
+  create: (data) => api.post('/user-answers/', data),
 };
 
 export default api; 

@@ -1,96 +1,62 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { assessmentsAPI } from '../../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { assessmentsAPI, userAssessmentsAPI } from '../../services/api';
 import { ASSESSMENT_STATUS, ASSESSMENT_TYPES } from '../../config/constants';
+baseURL: import.meta.env.VITE_API_URL
 
 const Assessments = () => {
   const [assessments, setAssessments] = useState([]);
+  const [userAssessments, setUserAssessments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAssessments = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
         setError('');
-
-        // In a real app, you would fetch this data from your API
-        // For now, we'll use mock data
+        // Fetch all published assessments
+        const allAssessments = await assessmentsAPI.getAll();
+        console.log('All Assessments:', allAssessments);
         
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Mock data
-        const mockAssessments = [
-          {
-            id: 1,
-            title: 'JavaScript Fundamentals',
-            description: 'Test your knowledge of JavaScript basics including variables, functions, and control flow.',
-            type: ASSESSMENT_TYPES.QUIZ,
-            status: ASSESSMENT_STATUS.COMPLETED,
-            score: 85,
-            duration: 30, // minutes
-            questionsCount: 20,
-            createdAt: '2023-11-15',
-          },
-          {
-            id: 2,
-            title: 'React Basics',
-            description: 'Evaluate your understanding of React components, props, state, and hooks.',
-            type: ASSESSMENT_TYPES.QUIZ,
-            status: ASSESSMENT_STATUS.COMPLETED,
-            score: 92,
-            duration: 45,
-            questionsCount: 25,
-            createdAt: '2023-11-10',
-          },
-          {
-            id: 3,
-            title: 'Advanced CSS',
-            description: 'Test your knowledge of advanced CSS concepts including Flexbox, Grid, and animations.',
-            type: ASSESSMENT_TYPES.QUIZ,
-            status: ASSESSMENT_STATUS.IN_PROGRESS,
-            score: null,
-            duration: 40,
-            questionsCount: 30,
-            createdAt: '2023-11-20',
-          },
-          {
-            id: 4,
-            title: 'Build a Todo App',
-            description: 'Create a simple todo application using React and demonstrate your frontend skills.',
-            type: ASSESSMENT_TYPES.PROJECT,
-            status: ASSESSMENT_STATUS.NOT_STARTED,
-            score: null,
-            duration: 120,
-            questionsCount: null,
-            createdAt: '2023-11-25',
-          },
-          {
-            id: 5,
-            title: 'Node.js API Development',
-            description: 'Demonstrate your ability to build RESTful APIs using Node.js and Express.',
-            type: ASSESSMENT_TYPES.PRACTICAL,
-            status: ASSESSMENT_STATUS.NOT_STARTED,
-            score: null,
-            duration: 90,
-            questionsCount: 5,
-            createdAt: '2023-11-28',
-          },
-        ];
-        
-        setAssessments(mockAssessments);
+        const publishedAssessments = allAssessments.filter(assessment => assessment.is_published);
+        setAssessments(publishedAssessments);
+        // Fetch user assessments
+        const userAssessmentsArr = await userAssessmentsAPI.getAll();
+        console.log('User Assessments:', userAssessmentsArr);
+        // Map assessmentId -> userAssessment
+        const userAssessmentMap = {};
+        userAssessmentsArr.forEach(ua => {
+          userAssessmentMap[ua.assessment] = ua;
+        });
+        setUserAssessments(userAssessmentMap);
       } catch (err) {
-        console.error('Error fetching assessments:', err);
         setError('Failed to load assessments. Please try again later.');
+        setAssessments([]);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchAssessments();
+    fetchData();
   }, []);
+  
+  console.log("hiihii")
+
+  const handleStartAssessment = async (assessmentId) => {
+    try {
+      const response = await userAssessmentsAPI.start({ assessment_id: assessmentId });
+      // Redirect to take assessment page
+      navigate(`/assessments/${assessmentId}/take`);
+    } catch (err) {
+      alert('Failed to start assessment.');
+    }
+  };
+
+  const handleViewResults = (assessmentId) => {
+    navigate(`/assessments/${assessmentId}/results`);
+  };
 
   const filteredAssessments = filter === 'all' 
     ? assessments 
@@ -227,29 +193,40 @@ const Assessments = () => {
                     <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>{assessment.duration} minutes</span>
+                    <span>{assessment.duration_minutes || 0} minutes</span>
                   </div>
-                  {assessment.questionsCount && (
+                  {assessment.language && (
+                    <div className="flex items-center mt-1">
+                      <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>Language: {assessment.language?.name || assessment.language || 'N/A'}</span>
+                    </div>
+                  )}
+                  {assessment.questions_count && (
                     <div className="flex items-center mt-1">
                       <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>{assessment.questionsCount} questions</span>
+                      <span>{assessment.questions_count} questions</span>
                     </div>
                   )}
                 </div>
               </div>
               <div className=" bg-white dark:bg-gray-800 px-6 py-4">
-                <Link
-                  to={`/assessments/${assessment.id}`}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  {assessment.status === ASSESSMENT_STATUS.NOT_STARTED
-                    ? 'Start Assessment'
-                    : assessment.status === ASSESSMENT_STATUS.IN_PROGRESS
-                    ? 'Continue Assessment'
-                    : 'View Results'}
-                </Link>
+                {userAssessments[assessment.id] && (userAssessments[assessment.id].status === 'PASSED' || userAssessments[assessment.id].status === 'FAILED') ? (
+                  <button onClick={() => handleViewResults(assessment.id)} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    View Results
+                  </button>
+                ) : userAssessments[assessment.id] && userAssessments[assessment.id].status === 'IN_PROGRESS' ? (
+                  <button onClick={() => handleStartAssessment(assessment.id)} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Continue Assessment
+                  </button>
+                ) : (
+                  <button onClick={() => handleStartAssessment(assessment.id)} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Start Assessment
+                  </button>
+                )}
               </div>
             </div>
           ))}
